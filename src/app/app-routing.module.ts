@@ -4,24 +4,32 @@
  * See LICENSE_SINGLE_APP / LICENSE_MULTI_APP in the 'docs' folder for license information on type of purchased license.
  */
 
-import { ExtraOptions, RouterModule, Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
-import { AuthGuard } from './@auth/auth.guard';
+import { ExtraOptions, RouterModule, Routes } from "@angular/router";
+import { NgModule } from "@angular/core";
+import { AuthGuard } from "./@auth/auth.guard";
+import { RolesGuard } from "./@auth/roles.guard";
 
 const routes: Routes = [
   {
-    path: 'pages',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('app/pages/pages.module')
-      .then(m => m.PagesModule),
+    path: "pages",
+    canActivate: [AuthGuard, RolesGuard],
+    loadChildren: () =>
+      import("app/pages/pages.module").then(m => m.PagesModule),
   },
   {
-    path: 'auth',
-    loadChildren: () => import('app/@auth/auth.module')
-      .then(m => m.AuthModule),
+    path: "template-pages",
+    canActivate: [AuthGuard, RolesGuard],
+    loadChildren: () =>
+      import("app/template-pages/template-pages.module").then(
+        m => m.TemplatePagesModule,
+      ),
   },
-  { path: '', redirectTo: 'pages', pathMatch: 'full' },
-  { path: '**', redirectTo: 'pages' },
+  {
+    path: "auth",
+    loadChildren: () => import("app/@auth/auth.module").then(m => m.AuthModule),
+  },
+  { path: "", redirectTo: "template-pages", pathMatch: "full" },
+  { path: "**", redirectTo: "template-pages" },
 ];
 
 const config: ExtraOptions = {
@@ -32,5 +40,4 @@ const config: ExtraOptions = {
   imports: [RouterModule.forRoot(routes, config)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

@@ -4,13 +4,13 @@
  * See LICENSE_SINGLE_APP / LICENSE_MULTI_APP in the 'docs' folder for license information on type of purchased license.
  */
 
-import { Observable } from 'rxjs';
-import { DataSource } from 'ng2-smart-table/lib/lib/data-source/data-source';
-import { Settings } from './settings';
+import { Observable } from "rxjs";
+import { DataSource } from "ng2-smart-table/lib/lib/data-source/data-source";
+import { Settings } from "./settings";
 
 export interface User {
   id: number;
-  role: string;
+  roles: string[];
   firstName: string;
   lastName: string;
   email: string;
@@ -19,6 +19,7 @@ export interface User {
   picture: string;
   address: Address;
   settings: Settings;
+  clientId: string;
 }
 
 export interface Address {

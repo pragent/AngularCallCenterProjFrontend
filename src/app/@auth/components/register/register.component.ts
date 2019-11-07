@@ -3,12 +3,13 @@
  * Licensed under the Single Application / Multi Application License.
  * See LICENSE_SINGLE_APP / LICENSE_MULTI_APP in the 'docs' folder for license information on type of purchased license.
  */
+
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Inject,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -16,40 +17,42 @@ import {
   NB_AUTH_OPTIONS,
   NbAuthSocialLink,
   NbAuthService,
-  NbAuthResult
+  NbAuthResult,
 } from "@nebular/auth";
+
 import { getDeepFromObject } from "../../helpers";
 import { EMAIL_PATTERN } from "../constants";
 import { RegisterService } from "./register.service";
+import { AppStore } from "../../../app.store";
 
 @Component({
   selector: "ngx-register",
   styleUrls: ["./register.component.scss"],
   templateUrl: "./register.component.html",
   providers: [RegisterService],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NgxRegisterComponent implements OnInit {
   minLength: number = this.getConfigValue(
-    "forms.validation.password.minLength"
+    "forms.validation.password.minLength",
   );
   maxLength: number = this.getConfigValue(
-    "forms.validation.password.maxLength"
+    "forms.validation.password.maxLength",
   );
   isFullNameRequired: boolean = this.getConfigValue(
-    "forms.validation.fullName.required"
+    "forms.validation.fullName.required",
   );
   isEmailRequired: boolean = this.getConfigValue(
-    "forms.validation.email.required"
+    "forms.validation.email.required",
   );
   isPasswordRequired: boolean = this.getConfigValue(
-    "forms.validation.password.required"
+    "forms.validation.password.required",
   );
   redirectDelay: number = this.getConfigValue("forms.register.redirectDelay");
   showMessages: any = this.getConfigValue("forms.register.showMessages");
   strategy: string = this.getConfigValue("forms.register.strategy");
   socialLinks: NbAuthSocialLink[] = this.getConfigValue(
-    "forms.login.socialLinks"
+    "forms.login.socialLinks",
   );
 
   submitted = false;
@@ -64,7 +67,7 @@ export class NgxRegisterComponent implements OnInit {
     protected cd: ChangeDetectorRef,
     protected router: Router,
     private fb: FormBuilder,
-    private registerService: RegisterService
+    private appStore: AppStore,
   ) {}
 
   get fullName() {
@@ -92,7 +95,7 @@ export class NgxRegisterComponent implements OnInit {
 
     const passwordValidators = [
       Validators.minLength(this.minLength),
-      Validators.maxLength(this.maxLength)
+      Validators.maxLength(this.maxLength),
     ];
     this.isPasswordRequired && passwordValidators.push(Validators.required);
 
@@ -101,7 +104,7 @@ export class NgxRegisterComponent implements OnInit {
       email: this.fb.control("", [...emailValidators]),
       password: this.fb.control("", [...passwordValidators]),
       confirmPassword: this.fb.control("", [...passwordValidators]),
-      terms: this.fb.control("")
+      terms: this.fb.control(""),
     });
   }
 
@@ -110,74 +113,26 @@ export class NgxRegisterComponent implements OnInit {
     this.errors = this.messages = [];
     this.submitted = true;
 
-    // TODO: code before registration
+    this.appStore.setLoadingState(true);
+    this.service
+      .register(this.strategy, this.user)
+      .subscribe((result: NbAuthResult) => {
+        this.appStore.setLoadingState(false);
+        this.submitted = false;
+        if (result.isSuccess()) {
+          this.messages = result.getMessages();
+        } else {
+          this.errors = result.getErrors();
+        }
 
-    this.registerService.getUserId(this.user.email).subscribe(res => {
-      console.log("user_id: ", res);
-      console.log("this.user", this.user);
-      let modifiedUser = {
-        ...this.user,
-        // @ts-ignore
-        clientId: res.ClientID
-      };
-
-      console.log("modifiedUser", modifiedUser);
-
-      this.service
-        .register(this.strategy, modifiedUser)
-        .subscribe((result: NbAuthResult) => {
-          this.submitted = false;
-          if (result.isSuccess()) {
-            this.messages = result.getMessages();
-
-            // TODO: code after registration
-            // console.log("REGISTERED my code");
-          } else {
-            this.errors = result.getErrors();
-          }
-
-          const redirect = result.getRedirect();
-          if (redirect) {
-            setTimeout(() => {
-              return this.router.navigateByUrl(redirect);
-            }, this.redirectDelay);
-          }
-          this.cd.detectChanges();
-        });
-    });
-    // this.registerService.getUserId(this.user.email).subscribe(res => {
-    //   console.log("user_id: ", res);
-    //   console.log("this.user", this.user);
-    //   let modifiedUser = {
-    //     ...this.user,
-    //     // @ts-ignore
-    //     clientId: res.ClientID
-    //   };
-
-    //   console.log("modifiedUser", modifiedUser);
-
-    //   this.service
-    //     .register(this.strategy, modifiedUser)
-    //     .subscribe((result: NbAuthResult) => {
-    //       this.submitted = false;
-    //       if (result.isSuccess()) {
-    //         this.messages = result.getMessages();
-
-    //         // TODO: code after registration
-    //         // console.log("REGISTERED my code");
-    //       } else {
-    //         this.errors = result.getErrors();
-    //       }
-
-    //       const redirect = result.getRedirect();
-    //       if (redirect) {
-    //         setTimeout(() => {
-    //           return this.router.navigateByUrl(redirect);
-    //         }, this.redirectDelay);
-    //       }
-    //       this.cd.detectChanges();
-    //     });
-    // });
+        const redirect = result.getRedirect();
+        if (redirect) {
+          setTimeout(() => {
+            return this.router.navigateByUrl(redirect);
+          }, this.redirectDelay);
+        }
+        this.cd.detectChanges();
+      });
   }
 
   getConfigValue(key: string): any {

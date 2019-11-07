@@ -1,0 +1,224 @@
+{
+  "template_ru": {
+    "panels": [
+      {
+        "name": "panel-1",
+        "step": "FirstStep",
+        "finite": false,
+        "data": [
+          {
+            "format": "p",
+            "value": "Приветственный текст который читает оператор",
+            "prior": 1
+          },
+          {
+            "format": "input",
+            "type": "text",
+            "value": "",
+            "data": "ATTR1",
+            "label": "Имя клиента",
+            "prior": 2
+          },
+          {
+            "format": "input",
+            "type": "text",
+            "value": "",
+            "data": "ATTR2",
+            "label": "ИНН клиента",
+            "prior": 3
+          }
+        ],
+        "outgoing": [
+          {
+            "data": "btn-1-1", // button id
+            "go": "panel-2", // go to this panel button click
+            "value": "Да. согласен",
+            "prior": 1
+          },
+          {
+            "data": "btn-1-2",
+            "go": "panel-3",
+            "value": "Нет не хочу",
+            "prior": 2
+          },
+          {
+            "data": "btn-1-3",
+            "go": "panel-4",
+            "value": "Не удобно говорить",
+            "prior": 3
+          },
+          {
+            "data": "btn-1-4",
+            "go": "panel-5",
+            "value": "Клиент жалуется на звонки",
+            "prior": 4
+          }
+        ]
+      },
+      {
+        "name": "panel-2",
+        "step": "SecondStep",
+        "finite": false,
+        "data": [
+          {
+            "format": "p",
+            "value": "Давайте я расскажу вам где забрать карту",
+            "prior": 1
+          }
+        ],
+        "outgoing": [
+          {
+            "data": "btn-2-1",
+            "go": "panel-6",
+            "value": "Да. согласен",
+            "prior": 1
+          },
+          {
+            "data": "btn-2-2",
+            "go": "panel-3",
+            "value": "Нет не хочу",
+            "prior": 2
+          }
+        ]
+      },
+      {
+        "name": "panel-3",
+        "step": "SecondStep",
+        "finite": false,
+        "data": [
+          {
+            "format": "p",
+            "value": "Отработка возражений",
+            "prior": 1
+          }
+        ],
+        "outgoing": [
+          {
+            "data": "btn-3-1",
+            "go": "panel-6",
+            "value": "Да. согласен",
+            "prior": 1
+          },
+          {
+            "data": "btn-3-2",
+            "go": "panel-7",
+            "value": "Нет не хочу",
+            "prior": 2
+          }
+        ]
+      },
+      {
+        "name": "panel-4",
+        "step": "SecondStep",
+        "finite": false,
+        "data": [
+          {
+            "format": "p",
+            "value": "Уточните, когда Вам перезвонить",
+            "prior": 1
+          },
+          {
+            "format": "input",
+            "type": "datepicker",
+            "value": "",
+            "data": "RECALL",
+            "label": "Время перезвона",
+            "prior": 2
+          }
+        ],
+        "outgoing": [
+          {
+            "data": "btn-4-1",
+            "go": "panel-save",
+            "value": "Сохранить",
+            "prior": 1,
+            "setStatus": "RE" // set this status when sending request to server
+          }
+        ]
+      },
+      {
+        "name": "panel-5",
+        "step": "SecondStep",
+        "finite": false,
+        "data": [
+          {
+            "format": "p",
+            "value": "Извините, мы больше вас не потревожим",
+            "prior": 1
+          }
+        ],
+        "outgoing": [
+          {
+            "data": "btn-5-1",
+            "go": "panel-save",
+            "value": "Сохранить",
+            "prior": 1,
+            "setStatus": "NC"
+          }
+        ]
+      },
+      {
+        "name": "panel-6",
+        "step": "ThirdStep",
+        "finite": false,
+        "data": [
+          {
+            "format": "p",
+            "value": "Отлично, ждем Вас в отделении",
+            "prior": 1
+          }
+        ],
+        "outgoing": [
+          {
+            "data": "btn-6-1",
+            "go": "panel-save",
+            "value": "Сохранить",
+            "prior": 1,
+            "setStatus": "OK"
+          }
+        ]
+      },
+      {
+        "name": "panel-7",
+        "step": "ThirdStep",
+        "finite": false,
+        "data": [
+          {
+            "format": "p",
+            "value": "Извините за беспокойство, если ваше решение изменится - ждем вас в отделении",
+            "prior": 1
+          }
+        ],
+        "outgoing": [
+          {
+            "data": "btn-7-1",
+            "go": "panel-save",
+            "value": "Сохранить",
+            "prior": 1,
+            "setStatus": "NO"
+          }
+        ]
+      },
+      {
+        "name": "panel-save",
+        "step": "ThirdStep",
+        "finite": true,
+        "data": [
+          {
+            "format": "p",
+            "value": "Перейти к следующему",
+            "prior": 1
+          }
+        ],
+        "outgoing": [
+          {
+            "data": "getNewContact",
+            "go": "getNewContact",
+            "value": "Перейти к следующему",
+            "prior": 1
+          }
+        ]
+      }
+    ]
+  }
+}

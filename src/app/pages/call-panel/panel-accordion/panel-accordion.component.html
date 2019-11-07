@@ -1,0 +1,20 @@
+<!-- <div class="accordion-container col-md-12 col-lg-3 col-xxxl-3"> -->
+<div class="accordion-container">
+  <nb-card>
+    <nb-card-header>{{ title }}</nb-card-header>
+
+    <nb-card-body>
+      <nb-accordion multi>
+        <nb-accordion-item *ngFor="let item of items">
+          <nb-accordion-item-header>
+            {{ item.title }}
+          </nb-accordion-item-header>
+          <nb-accordion-item-body>
+            {{ item.text }}
+          </nb-accordion-item-body>
+        </nb-accordion-item>
+      </nb-accordion>
+      <!-- <button nbButton (click)="toggle()">Toggle First Item</button> -->
+    </nb-card-body>
+  </nb-card>
+</div>

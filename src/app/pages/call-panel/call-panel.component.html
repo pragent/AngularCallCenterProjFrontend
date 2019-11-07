@@ -1,0 +1,20 @@
+<!-- <p>call-panel works!</p> -->
+<div id="grid">
+  <ngx-call-stepper
+    [fromStart]="!currentEventRef"
+    [startTab]="currentTab"
+    [panels]="(eventTemplate | async)?.RU?.panels || []"
+    (onStartClickEvent)="startCall()"
+    class="panel"
+  ></ngx-call-stepper>
+  <ngx-panel-accordion
+    [items]="(faq | async)?.RU?.AG || []"
+    title="Аргументы"
+    class="accordion-1"
+  ></ngx-panel-accordion>
+  <ngx-panel-accordion
+    [items]="(faq | async)?.RU?.VZ || []"
+    title="Возражения"
+    class="accordion-2"
+  ></ngx-panel-accordion>
+</div>

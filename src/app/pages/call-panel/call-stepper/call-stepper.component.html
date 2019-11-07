@@ -1,0 +1,94 @@
+<div>
+  <nb-card>
+    <nb-card-body>
+      <nb-stepper #stepper disableStepNavigation [selectedIndex]="startTab">
+        <nb-step
+          *ngFor="let panel of panels; let i = index"
+          [label]="shouldLabelBeDisplayed(i) ? panel.step : null"
+          [hidden]="!shouldLabelBeDisplayed(i)"
+        >
+          <ng-container *ngFor="let el of panel.data" [ngSwitch]="el.format">
+            <p *ngSwitchCase="'p'">
+              {{ el.value }}
+            </p>
+            <div *ngSwitchCase="'input'" class="input-group">
+              <input
+                *ngIf="el.type === 'text'"
+                [placeholder]="el.label"
+                class="form-control my-stepper-input"
+                (ngModelChange)="onInputChange()"
+                [(ngModel)]="infoInputs[el.data]"
+              />
+              <!-- [formControl]="infoInputs[el.data]" -->
+              <!-- (change)="onInputChange()" -->
+
+              <!-- <div *ngIf="el.type === 'datepicker'">
+                <ngb-timepicker
+                  (ngModelChange)="onInputChange()"
+                  [(ngModel)]="infoInputs[el.data]"
+                ></ngb-timepicker>
+              </div> -->
+
+              <!-- <div *ngIf="el.type === 'datetimepicker'" class="datetimepicker-container row"> -->
+              <div
+                *ngIf="el.type === 'datepicker'"
+                class="datetimepicker-container row"
+              >
+                <ngb-timepicker
+                  [(ngModel)]="infoInputs[el.data].time"
+                  (ngModelChange)="onInputChange()"
+                ></ngb-timepicker>
+
+                <input
+                  nbInput
+                  placeholder="Form Picker"
+                  [nbDatepicker]="formpicker"
+                  [(ngModel)]="infoInputs[el.data].date"
+                  (ngModelChange)="onInputChange()"
+                />
+                <nb-datepicker #formpicker format="dd-MM-yyyy"></nb-datepicker>
+              </div>
+            </div>
+          </ng-container>
+
+          <button
+            nbButton
+            nbStepperPrevious
+            *ngIf="i !== 0"
+            (click)="saveCurrentTabIdx()"
+          >
+            Prev
+          </button>
+
+          <button
+            nbButton
+            nbStepperNext
+            *ngIf="
+              panel.outgoing[0].insertedAction === 'onStartClickEvent';
+              else elseBlock
+            "
+            (click)="onStartClickEvent.emit(true); saveCurrentTabIdx()"
+          >
+            {{ panel.outgoing[0].value }}
+          </button>
+
+          <ng-template #elseBlock>
+            <button
+              nbButton
+              *ngFor="let el of panel.outgoing"
+              (click)="
+                el.go === 'getNewContact'
+                  ? getNextClient()
+                  : setCurrentStepperIdx(el.go) &&
+                    (el.setStatus && saveState(el.setStatus))
+              "
+            >
+              {{ el.value }}
+            </button>
+          </ng-template>
+        </nb-step>
+      </nb-stepper>
+    </nb-card-body>
+  </nb-card>
+</div>
+<!-- </div> -->

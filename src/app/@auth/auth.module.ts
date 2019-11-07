@@ -4,23 +4,23 @@
  * See LICENSE_SINGLE_APP / LICENSE_MULTI_APP in the 'docs' folder for license information on type of purchased license.
  */
 
-import { NgModule, ModuleWithProviders } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { HttpRequest } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgModule, ModuleWithProviders } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { HttpRequest } from "@angular/common/http";
+import { CommonModule } from "@angular/common";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import {
   NbAuthJWTInterceptor,
   NbAuthModule,
   NB_AUTH_TOKEN_INTERCEPTOR_FILTER,
   NbTokenLocalStorage,
-} from '@nebular/auth';
-import { AuthInterceptor } from './auth.interceptor';
-import { AuthGuard } from './auth.guard';
-import { AdminGuard } from './admin.guard';
-import { AuthPipe } from './auth.pipe';
-import { RoleProvider } from './role.provider';
-import { NbRoleProvider, NbSecurityModule } from '@nebular/security';
+} from "@nebular/auth";
+import { AuthInterceptor } from "./auth.interceptor";
+import { AuthGuard } from "./auth.guard";
+import { AdminGuard } from "./admin.guard";
+import { AuthPipe } from "./auth.pipe";
+import { RoleProvider } from "./role.provider";
+import { NbRoleProvider, NbSecurityModule } from "@nebular/security";
 
 import {
   NgxLoginComponent,
@@ -30,7 +30,7 @@ import {
   NgxRegisterComponent,
   NgxRequestPasswordComponent,
   NgxResetPasswordComponent,
-} from './components';
+} from "./components";
 
 import {
   NbAlertModule,
@@ -40,13 +40,15 @@ import {
   NbCheckboxModule,
   NbInputModule,
   NbButtonModule,
-} from '@nebular/theme';
-import { AuthRoutingModule } from './auth-routing.module';
-import { ComponentsModule } from '../@components/components.module';
-import { authOptions } from './auth.settings';
-import { authSettings } from './access.settings';
+  NbSpinnerModule,
+} from "@nebular/theme";
+import { AuthRoutingModule } from "./auth-routing.module";
+import { ComponentsModule } from "../@components/components.module";
+import { authOptions } from "./auth.settings";
+import { authSettings } from "./access.settings";
+import { RolesGuard } from "./roles.guard";
 
-const GUARDS = [AuthGuard, AdminGuard];
+const GUARDS = [AuthGuard, AdminGuard, RolesGuard];
 const PIPES = [AuthPipe];
 const COMPONENTS = [
   NgxLoginComponent,
@@ -66,11 +68,16 @@ const NB_MODULES = [
   NbCheckboxModule,
   NbInputModule,
   NbButtonModule,
+  NbSpinnerModule,
 ];
 
 export function filterInterceptorRequest(req: HttpRequest<any>): boolean {
-  return ['/auth/login', '/auth/sign-up', '/auth/request-pass', '/auth/refresh-token']
-    .some(url => req.url.includes(url));
+  return [
+    "/auth/login",
+    "/auth/sign-up",
+    "/auth/request-pass",
+    "/auth/refresh-token",
+  ].some(url => req.url.includes(url));
 }
 
 @NgModule({
@@ -89,10 +96,12 @@ export function filterInterceptorRequest(req: HttpRequest<any>): boolean {
       accessControl: authSettings,
     }).providers,
     {
-      provide: NbRoleProvider, useClass: RoleProvider,
+      provide: NbRoleProvider,
+      useClass: RoleProvider,
     },
     {
-      provide: NbTokenLocalStorage, useClass: NbTokenLocalStorage,
+      provide: NbTokenLocalStorage,
+      useClass: NbTokenLocalStorage,
     },
   ],
 })
@@ -101,10 +110,18 @@ export class AuthModule {
     return <ModuleWithProviders>{
       ngModule: AuthModule,
       providers: [
-        { provide: NB_AUTH_TOKEN_INTERCEPTOR_FILTER, useValue: filterInterceptorRequest },
-        { provide: HTTP_INTERCEPTORS, useClass: NbAuthJWTInterceptor, multi: true },
+        {
+          provide: NB_AUTH_TOKEN_INTERCEPTOR_FILTER,
+          useValue: filterInterceptorRequest,
+        },
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: NbAuthJWTInterceptor,
+          multi: true,
+        },
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-        ...GUARDS],
+        ...GUARDS,
+      ],
     };
   }
 }

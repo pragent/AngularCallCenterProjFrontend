@@ -1,0 +1,19 @@
+#grid {
+  display: grid;
+  grid-template-columns: 24% 24% 24% 24%;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "panel panel panel accordion1"
+    ". . . accordion2";
+  grid-column-gap: 20px;
+}
+
+.panel {
+  grid-area: panel;
+}
+.accordion-1 {
+  grid-area: accordion1;
+}
+.accordion-2 {
+  grid-area: accordion2;
+}

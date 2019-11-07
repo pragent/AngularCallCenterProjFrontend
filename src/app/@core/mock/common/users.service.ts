@@ -4,15 +4,14 @@
  * See LICENSE_SINGLE_APP / LICENSE_MULTI_APP in the 'docs' folder for license information on type of purchased license.
  */
 
-import { of as observableOf,  Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { User, UserData } from '../../interfaces/common/users';
-import { LocalDataSource } from 'ng2-smart-table';
-import { DataSource } from 'ng2-smart-table/lib/lib/data-source/data-source';
+import { of as observableOf, Observable } from "rxjs";
+import { Injectable } from "@angular/core";
+import { User, UserData } from "../../interfaces/common/users";
+import { LocalDataSource } from "ng2-smart-table";
+import { DataSource } from "ng2-smart-table/lib/lib/data-source/data-source";
 
 @Injectable()
 export class UsersService extends UserData {
-
   get gridDataSource(): DataSource {
     return new LocalDataSource(this.data);
   }
@@ -56,74 +55,79 @@ export class UsersService extends UserData {
   private data: User[] = [
     {
       id: 1,
-      role: 'user',
-      firstName: 'Mark',
-      lastName: 'Walmart',
-      login: '@mdo',
-      email: 'mdo@gmail.com',
+      roles: ["user"],
+      firstName: "Mark",
+      lastName: "Walmart",
+      login: "@mdo",
+      email: "mdo@gmail.com",
+      clientId: "123123",
       age: 0,
-      picture: '',
+      picture: "",
       address: {
-        street: 'Wall St.',
-        city: 'New York',
-        zipCode: '10005',
+        street: "Wall St.",
+        city: "New York",
+        zipCode: "10005",
       },
       settings: {
-        themeName: 'cosmic',
+        themeName: "cosmic",
       },
     },
     {
       id: 2,
-      role: 'user',
-      firstName: 'Jacob',
-      lastName: 'Cuba',
-      login: '@mdo',
-      email: 'mdo@gmail.com',
+      roles: ["user"],
+      firstName: "Jacob",
+      lastName: "Cuba",
+      clientId: "123123",
+      login: "@mdo",
+      email: "mdo@gmail.com",
       age: 0,
-      picture: '',
+      picture: "",
       address: {
-        street: 'Wall St.',
-        city: 'New York',
-        zipCode: '10005',
+        street: "Wall St.",
+        city: "New York",
+        zipCode: "10005",
       },
       settings: {
-        themeName: 'cosmic',
+        themeName: "cosmic",
       },
     },
     {
       id: 3,
-      role: 'user',
-      firstName: 'Larry',
-      lastName: 'Page',
-      login: '@twitter',
-      email: 'twitter@outlook.com',
+      roles: ["user"],
+      firstName: "Larry",
+      lastName: "Page",
+      clientId: "123123",
+      login: "@twitter",
+      email: "twitter@outlook.com",
       age: 0,
-      picture: '',
+      picture: "",
       address: {
-        street: 'Wall St.',
-        city: 'New York',
-        zipCode: '10005',
+        street: "Wall St.",
+        city: "New York",
+        zipCode: "10005",
       },
       settings: {
-        themeName: 'cosmic',
+        themeName: "cosmic",
       },
     },
     {
       id: 4,
-      role: 'user',
-      firstName: 'John',
-      lastName: 'Snow',
-      login: '@snow',
-      email: 'snow@gmail.com',
+      roles: ["user"],
+      firstName: "John",
+      lastName: "Snow",
+      login: "@snow",
+      clientId: "123123",
+      email: "snow@gmail.com",
       age: 0,
-      picture: '',
+      picture: "",
       address: {
-        street: 'Wall St.',
-        city: 'New York',
-        zipCode: '10005',
+        street: "Wall St.",
+        city: "New York",
+        zipCode: "10005",
       },
       settings: {
-        themeName: 'cosmic',
+        themeName: "cosmic",
       },
-    }];
+    },
+  ];
 }

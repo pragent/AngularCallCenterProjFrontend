@@ -7,7 +7,24 @@ import { Observable, throwError } from "rxjs";
 
 const CORS_ANYWHERE = "https://cors-anywhere.herokuapp.com/";
 const GET_USER_ID_API_PATH = "http://crm.kastika.com.ua/api/portal/createuser";
+const GET_USER_ROLES_API_PATH = "http://crm.kastika.com.ua/api/portal/createuser";
 // const GET_USER_ID_API_PATH = "https://jsonplaceholder.typicode.com/todos/1";
+
+function getRoles(email) {
+  const httpOptions = {
+    headers: new HttpHeaders({
+      Test: "Y"
+    })
+  };
+  const fullUrl = CORS_ANYWHERE + GET_USER_ID_API_PATH;
+  
+  return (
+    this.http
+      .post(fullUrl, { clientId: "100020" }, httpOptions)
+      // .post(fullUrl, { email: "example@gmail.com" }, httpOptions)
+      .pipe(catchError(this.handleError))
+  );
+}
 
 @Injectable()
 export class RegisterService {
@@ -20,7 +37,7 @@ export class RegisterService {
       })
     };
     const fullUrl = CORS_ANYWHERE + GET_USER_ID_API_PATH;
-    console.log("fullUrl: ", fullUrl);
+    
     return (
       this.http
         .post(fullUrl, { email }, httpOptions)
@@ -31,17 +48,13 @@ export class RegisterService {
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
       console.error("CLIENT-SIDE error:", error.error.message);
     } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
       console.error(
         `BACKEND ERROR: code ${error.status}, ` + `body was: ${error.error}`
       );
       console.log(error);
     }
-    // return an observable with a user-facing error message
     // TODO: change this text
     return throwError("I fucked it up");
   }
