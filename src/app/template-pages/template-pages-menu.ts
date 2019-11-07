@@ -298,7 +298,7 @@ export class PagesMenu {
                 .map(el => {
                   return {
                     // @ts-ignore
-                    title: el.evtname,
+                    title: el.title,
                     // @ts-ignore
                     link: el.path,
                   };

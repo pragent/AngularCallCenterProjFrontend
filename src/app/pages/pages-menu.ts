@@ -62,8 +62,9 @@ export class PagesMenu {
                 .map(el => {
                   return {
                     // @ts-ignore
-                    title: `${el.evt}(${el.cnt}) - ${el.evtname}`,
+                    title: el.title,
                     // @ts-ignore
+                    // link: `/pages/call-panel/${el.evt}`,
                     link: el.path,
                   };
                 }),

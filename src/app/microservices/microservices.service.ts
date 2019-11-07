@@ -18,17 +18,21 @@ export class MicroservicesService {
     return this.http
       .post(`${environment.microservicesApiUrl}/portal/geteventformenu`, {})
       .pipe(
+        map(res => {
+          // console.log(res);
+          return res;
+        }),
+      )
+      .pipe(
         map((menuItemsResp: MsResponse) => {
           let menuItems: Object[] = menuItemsResp.data;
-          const testPages = [
-            "/pages/call-panel",
-            "/template-pages/modal-overlays/dialog",
-            "/template-pages/layout/stepper",
-          ];
           menuItems = menuItems.map((el, idx) => {
             return {
               ...el,
-              path: testPages[idx],
+              // @ts-ignore
+              title: `${el.evt}(${el.cnt}) - ${el.evtname}`,
+              // @ts-ignore
+              path: `/pages/call-panel/${el.evt}`,
             };
           });
 

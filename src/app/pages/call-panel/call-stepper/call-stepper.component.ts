@@ -182,8 +182,10 @@ export class CallStepperComponent implements OnInit {
           case "RECALL":
             if (val.time && val.date) {
               val = convertDateTimeToStr(val);
-            } else {
+            } else if (val.time !== "" && val.date !== "") {
               val = convertJsonToTime(val);
+            } else {
+              val = "";
             }
             break;
 
@@ -240,11 +242,24 @@ export class CallStepperComponent implements OnInit {
     }, 10);
   }
 
+  correctifyDateForStorage(date: Date) {
+    date.setDate(date.getDate() + 1);
+    date.setMonth(date.getMonth() - 1);
+
+    return date;
+  }
+
   saveInputValues() {
-    localStorage.setItem(
-      "callPanelInputValues",
-      JSON.stringify(this.infoInputs),
-    );
+    const valsToSave = JSON.parse(JSON.stringify(this.infoInputs));
+    if (valsToSave && valsToSave.RECALL && valsToSave.RECALL.date) {
+      valsToSave.RECALL.date = this.correctifyDateForStorage(
+        valsToSave.RECALL.date instanceof Date
+          ? valsToSave.RECALL.date
+          : new Date(valsToSave.RECALL.date),
+      );
+    }
+
+    localStorage.setItem("callPanelInputValues", JSON.stringify(valsToSave));
   }
 
   clearInputs() {

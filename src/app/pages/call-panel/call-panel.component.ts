@@ -1,8 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { MicroservicesService } from "../../microservices/microservices.service";
 import { McStore } from "../../microservices/stores/mc.store";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { UserStore } from "../../@core/stores/user.store";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "ngx-call-panel",
@@ -23,6 +24,7 @@ export class CallPanelComponent implements OnInit {
     private micStore: McStore,
     private userStore: UserStore,
     private router: Router,
+    private route: ActivatedRoute,
   ) {
     this.currentEventRef = localStorage.getItem("currentCallRef");
     this.currentTab = parseInt(localStorage.getItem("currentTab")) || 0;
@@ -36,15 +38,22 @@ export class CallPanelComponent implements OnInit {
         this.eventTemplate = this.micService.getEventTemplate(
           this.currentEvtCode,
         );
+
         this.faq = this.micService.getFAQ(this.currentEvtCode);
+        // this.eventTemplate.subscribe(res => console.log("evt tpl: ", res));
+        // this.faq.subscribe(res => console.log("faq: ", res));
       });
     } else {
       console.log("NO REF FOUND");
-      this.currentEvtCode = this.getCurrentEvtCode();
-      this.eventTemplate = this.micService.getEventTemplate(
-        this.currentEvtCode,
-      );
-      this.faq = this.micService.getFAQ(this.currentEvtCode);
+      this.getCurrentEvtCode().subscribe((evt: string) => {
+        this.currentEvtCode = evt;
+        this.eventTemplate = this.micService.getEventTemplate(
+          this.currentEvtCode,
+        );
+        this.faq = this.micService.getFAQ(this.currentEvtCode);
+        // this.eventTemplate.subscribe(res => console.log("evt tpl: ", res));
+        // this.faq.subscribe(res => console.log("faq: ", res));
+      });
     }
   }
 
@@ -61,8 +70,16 @@ export class CallPanelComponent implements OnInit {
   }
 
   getCurrentEvtCode() {
-    return this.micStore.getMenuItems().find(el => el.path === this.router.url)
-      .evt;
+    // return this.micStore.getMenuItems().find(el => el.path === this.router.url)
+    //   .evt;
+    return this.route.paramMap.pipe(
+      map(params => {
+        //  @ts-ignore
+        // console.log(params.get("evt"));
+        //  @ts-ignore
+        return params.get("evt");
+      }),
+    );
   }
 
   ngOnInit() {}

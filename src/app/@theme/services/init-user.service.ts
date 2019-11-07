@@ -18,22 +18,21 @@ export class InitUserService {
     protected userStore: UserStore,
     protected usersService: UserData,
     protected themeService: NbThemeService,
-    protected mcService: MicroservicesService
-  ) {
-  }
+    protected mcService: MicroservicesService,
+  ) {}
 
   initCurrentUserRoles(): Observable<any> {
     return this.mcService.getUserRoles(this.userStore.getUser().clientId).pipe(
       tap(roles => {
         if (roles) {
-          this.userStore.setRoles(roles);
+          // this.userStore.setRoles(roles);
           // TODO: delete this after testing
-          //   this.userStore.setRoles({
-          //     ...roles,
-          //     EVT: [...roles.EVT, "A0"],
-          //   });
+          this.userStore.setRoles({
+            ...roles,
+            EVT: [...roles.EVT, "A0"],
+          });
         }
-      })
+      }),
     );
   }
 
@@ -47,7 +46,7 @@ export class InitUserService {
             this.themeService.changeTheme(user.settings.themeName);
           }
         }
-      })
+      }),
     );
   }
 }

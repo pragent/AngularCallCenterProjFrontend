@@ -15,7 +15,7 @@ function isTime(tbd: Time) {
 export const convertJsonToTime = json => {
   return Object.keys(json).reduce((acc, cur, idx) => {
     acc += json[cur];
-    if (idx !== Object.keys(json).length - 1) {
+    if (typeof json[cur] === "number" && idx !== Object.keys(json).length - 1) {
       acc += ":";
     }
     return acc;
@@ -25,7 +25,7 @@ export const convertJsonToTime = json => {
 export const convertDateToString = date => {
   return `${date
     .getFullYear()
-    .toString()}-${date.getMonth().toString()}-${date.getDate()}`;
+    .toString()}-${(date.getMonth() + 1).toString()}-${date.getDate()}`;
 };
 
 export const convertStringToDate = (
@@ -35,19 +35,22 @@ export const convertStringToDate = (
   if (fromStringifiedJSON) {
     str = str.slice(0, str.indexOf("T"));
   }
+
   const regex = /^(.*)[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/;
   const match = str.match(regex);
   const y = parseInt(match[1]),
     m = parseInt(match[2]),
     d = parseInt(match[3]);
+
   const res = new Date(y, m, d);
   return res;
 };
 
 export const convertDateTimeToStr = json => {
   let res = "";
-  res += convertDateToString(json.date) + " ";
-  res += convertJsonToTime(json.time);
+  
+  res += json.date ? convertDateToString(json.date) + " " : "";
+  res += json.time ? convertJsonToTime(json.time) : "";
   return res;
 };
 
